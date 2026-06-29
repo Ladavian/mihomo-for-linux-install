@@ -6,28 +6,26 @@
 
 ## 快速使用
 
-把下面的 `YOUR_NAME/YOUR_REPO` 换成你自己的 GitHub 仓库地址：
-
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/YOUR_NAME/YOUR_REPO/main/install.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/Ladavian/mihomo-for-linux-install/main/install.sh)
 ```
 
 使用订阅或远程配置安装：
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/YOUR_NAME/YOUR_REPO/main/install.sh) --sub-url "https://example.com/config.yaml"
+bash <(curl -fsSL https://raw.githubusercontent.com/Ladavian/mihomo-for-linux-install/main/install.sh) --sub-url "https://example.com/config.yaml"
 ```
 
 启用 TUN 模式安装：
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/YOUR_NAME/YOUR_REPO/main/install.sh) --enable-tun --sub-url "https://example.com/config.yaml"
+bash <(curl -fsSL https://raw.githubusercontent.com/Ladavian/mihomo-for-linux-install/main/install.sh) --enable-tun --sub-url "https://example.com/config.yaml"
 ```
 
 国内访问 GitHub release 较慢时，可以加代理前缀：
 
 ```bash
-MIHOMO_GITHUB_PROXY="https://gh-proxy.com" bash <(curl -fsSL https://raw.githubusercontent.com/YOUR_NAME/YOUR_REPO/main/install.sh)
+MIHOMO_GITHUB_PROXY="https://gh-proxy.com" bash <(curl -fsSL https://raw.githubusercontent.com/Ladavian/mihomo-for-linux-install/main/install.sh)
 ```
 
 ## LXC 安装前检查
@@ -110,16 +108,15 @@ http://<LXC-IP>:9090
 保留配置卸载：
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/YOUR_NAME/YOUR_REPO/main/uninstall.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/Ladavian/mihomo-for-linux-install/main/uninstall.sh)
 ```
 
 连配置一起删除：
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/YOUR_NAME/YOUR_REPO/main/uninstall.sh) --purge
+bash <(curl -fsSL https://raw.githubusercontent.com/Ladavian/mihomo-for-linux-install/main/uninstall.sh) --purge
 ```
 
 ## 注意
 
 默认生成的配置只有 `DIRECT`，不会自带代理节点。生产使用建议通过 `--sub-url` 写入你自己的 mihomo 配置，或安装后编辑 `/etc/mihomo/config.yaml`。
-# mihomo-for-linux-install
