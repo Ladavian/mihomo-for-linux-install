@@ -34,11 +34,11 @@ if [[ -t 1 ]]; then
 fi
 
 log() {
-  printf '%b[INFO]%b %s\n' "${BLUE}" "${RESET}" "$*"
+  printf '%b[INFO]%b %s\n' "${BLUE}" "${RESET}" "$*" >&2
 }
 
 ok() {
-  printf '%b[ OK ]%b %s\n' "${GREEN}" "${RESET}" "$*"
+  printf '%b[ OK ]%b %s\n' "${GREEN}" "${RESET}" "$*" >&2
 }
 
 warn() {
@@ -349,7 +349,7 @@ resolve_version_tag() {
   local latest_url effective tag
   latest_url="https://github.com/${REPO}/releases/latest"
 
-  log "Resolving latest mihomo version from ${latest_url}"
+  log "Resolving latest mihomo version from ${latest_url}" >&2
   effective="$(curl -fsSL -o /dev/null -w '%{url_effective}' "${latest_url}")" || die "Failed to resolve latest release page: ${latest_url}"
   tag="${effective##*/}"
 
@@ -377,7 +377,7 @@ resolve_download_url() {
   arch="$(detect_arch)"
   tag="$(resolve_version_tag)"
 
-  log "Using mihomo ${tag} release asset for linux-${arch}"
+  log "Using mihomo ${tag} release asset for linux-${arch}" >&2
   url="https://github.com/${REPO}/releases/download/${tag}/mihomo-linux-${arch}-${tag}.gz"
   apply_github_proxy "${url}"
 }
