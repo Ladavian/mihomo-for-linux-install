@@ -340,17 +340,54 @@ github_api_url() {
   fi
 }
 
+resolve_version_tag() {
+  if [[ "${VERSION}" != "latest" ]]; then
+    printf '%s' "${VERSION}"
+    return
+  fi
+
+  local latest_url effective tag
+  latest_url="https://github.com/${REPO}/releases/latest"
+
+  log "Resolving latest mihomo version from ${latest_url}"
+  effective="$(curl -fsSL -o /dev/null -w '%{url_effective}' "${latest_url}")" || die "Failed to resolve latest release page: ${latest_url}"
+  tag="${effective##*/}"
+
+  [[ "${tag}" == v* ]] || die "Could not resolve latest mihomo version from: ${effective}"
+  printf '%s' "${tag}"
+}
+
+apply_github_proxy() {
+  local url="$1"
+
+  if [[ -n "${GITHUB_PROXY}" ]]; then
+    printf '%s/%s' "${GITHUB_PROXY%/}" "${url}"
+  else
+    printf '%s' "${url}"
+  fi
+}
+
 resolve_download_url() {
   if [[ -n "${DOWNLOAD_URL}" ]]; then
     printf '%s' "${DOWNLOAD_URL}"
     return
   fi
 
+  local arch tag url
+  arch="$(detect_arch)"
+  tag="$(resolve_version_tag)"
+
+  log "Using mihomo ${tag} release asset for linux-${arch}"
+  url="https://github.com/${REPO}/releases/download/${tag}/mihomo-linux-${arch}-${tag}.gz"
+  apply_github_proxy "${url}"
+}
+
+resolve_download_url_from_api() {
   local arch api json url
   arch="$(detect_arch)"
   api="$(github_api_url)"
 
-  log "Resolving mihomo release asset from ${REPO} (${VERSION}, linux-${arch})"
+  log "Resolving mihomo release asset from GitHub API (${VERSION}, linux-${arch})"
   json="$(curl -fsSL "${api}")" || die "Failed to query GitHub release API: ${api}"
 
   url="$(
@@ -381,11 +418,7 @@ resolve_download_url() {
 
   [[ -n "${url}" ]] || die "Could not find a suitable mihomo release asset for linux-${arch}"
 
-  if [[ -n "${GITHUB_PROXY}" ]]; then
-    printf '%s/%s' "${GITHUB_PROXY%/}" "${url}"
-  else
-    printf '%s' "${url}"
-  fi
+  apply_github_proxy "${url}"
 }
 
 ensure_user() {
