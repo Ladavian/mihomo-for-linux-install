@@ -55,7 +55,28 @@ geo(){
 }
 
 config(){
- [ -f "$CONFIG_DIR/config.yaml" ] && return
+
+ if [ -f "$CONFIG_DIR/config.yaml" ]; then
+    read -rp "检测到已有 config.yaml，是否覆盖？[y/N] " OVER
+    case "$OVER" in
+        y|Y) ;;
+        *) msg "保留现有配置"; return;;
+    esac
+ fi
+
+ echo
+ read -rp "请输入 Mihomo 订阅链接(留空使用默认配置)： " SUB
+
+ if [ -n "$SUB" ]; then
+    msg "正在下载订阅..."
+    if curl -fsSL --connect-timeout 15 --retry 3 "$SUB" -o "$CONFIG_DIR/config.yaml"; then
+        msg "订阅下载成功"
+        return
+    else
+        err "订阅下载失败"
+    fi
+ fi
+
 cat >"$CONFIG_DIR/config.yaml"<<EOF
 mixed-port: 7893
 allow-lan: true
